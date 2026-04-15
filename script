@@ -1,0 +1,226 @@
+local Luna = loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Softworks/Luna-Interface-Suite/refs/heads/master/source.lua", true))()
+
+-- รายชื่อ Code
+local activeCodes = {
+    "1MMEMBERSTYSMGUYS", "800KLIKESTYSM", "700MVISITSWOWW", 
+    "SORRYFORTHESEISSUES", "SORRYFORTRADELOCK", "700KLIKESTYSM",
+    "FREECODE", "500MVISITSWOAHH", "ICEQUEEN", "MINIUPDATEBIGONESOON",
+    "600KLIKESTY","400MVISITSWOAHH","500KLIKESTY","SORRYFORRESTARTONLYONETONIGHTT",
+    "BIGGESTUPDATESEA2NEXT","BIGGESTUPDATENEXT","TYFOR115KFOLLOW","MOONUPDATE",
+    "SEA2NEXTUPDATE","200MVISITS","SORRYFORMANYRESTARTS","SORRYFORALLTHEBUGSBUTBETTER",
+    "SORRYFORALLTHEBUGSS","MASSIVEUPDATE","INFINITETOWER","SEA2SOON","175KFOLLOWSTYSM",
+    "150MVISITS","EIDMUBARAK","ALTERUPDATE","BIGGESTUPDATENEXT","SMALLDELAYVERYSORRY",
+    "45KFOLLOWSTYY","HUGEUPDATEW","3SPECS",
+}
+
+local VIM = game:GetService("VirtualInputManager")
+
+local Window = Luna:CreateWindow({
+    Name = "Test Version :",
+    Subtitle = "by Udo",
+    LogoID = "82795327169782",
+    LoadingEnabled = true,
+    LoadingTitle = "Luna Interface Suite",
+    LoadingSubtitle = "by Nebula Softworks",
+
+    ConfigSettings = {
+        RootFolder = nil,
+        ConfigFolder = "Big Hub"
+    },
+
+    KeySystem = false, 
+    KeySettings = nil 
+})
+
+Window:CreateHomeTab({
+    SupportedExecutors = {
+        "Synapse X", "Krnl", "ProtoSmasher", "Fluxus", "Script-Ware",
+        "EasyExploits", "Electron", "JJSploit", "Calamari", "SirHurt",
+        "Sentinel", "WEAREDEVS", "Comet", "Cellery", "Wave", "CODex", "Delta" , "Seliware",
+    },
+    DiscordInvite = "1234",
+    Icon = 1
+})
+
+---
+-- 1. CODE TAB (ระบบ Redeem)
+---
+local CodeTab = Window:CreateTab({
+    Name = "Code",
+    Icon = "qr_code",
+    ImageSource = "Material",
+    ShowTitle = true
+})
+
+CodeTab:CreateButton({
+    Name = "Redeem All Code",
+    Description = "กดเพื่อใส่โค้ดทั้งหมดอัตโนมัติ",
+    Callback = function()
+        task.spawn(function()
+            local player = game:GetService("Players").LocalPlayer
+            local playerGui = player:WaitForChild("PlayerGui")
+            
+            local openBtn = playerGui:FindFirstChild("BasicStatsCurrencyAndButtonsUI")
+                and playerGui.BasicStatsCurrencyAndButtonsUI.MainFrame.UIButtons:FindFirstChild("SettingsButtonFrame")
+            
+            if openBtn then
+                local ox = openBtn.AbsolutePosition.X + (openBtn.AbsoluteSize.X / 2)
+                local oy = openBtn.AbsolutePosition.Y + (openBtn.AbsoluteSize.Y / 2) + 58
+                VIM:SendMouseButtonEvent(ox, oy, 0, true, game, 1)
+                task.wait(0.1)
+                VIM:SendMouseButtonEvent(ox, oy, 0, false, game, 1)
+                task.wait(1) 
+            end
+
+            local scrollingFrame = playerGui:FindFirstChild("SettingsUI")
+                and playerGui.SettingsUI.MainFrame.Frame.Content:FindFirstChild("SettingsTabFrame")
+            
+            if scrollingFrame and scrollingFrame:IsA("ScrollingFrame") then
+                scrollingFrame.CanvasPosition = Vector2.new(0, 5000) 
+                task.wait(1) 
+            end
+
+            local settingsUI = playerGui:FindFirstChild("SettingsUI")
+            local base = settingsUI and settingsUI.MainFrame.Frame.Content.SettingsTabFrame.SettingCodes.Holder
+            
+            local codeBox = base and base.CodesBox:FindFirstChild("CodeBox")
+            local redeemBtn = base and base.Holder:FindFirstChild("Redeem")
+
+            if not redeemBtn or not codeBox then
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "ไม่พบตำแหน่งปุ่ม! กรุณาลองใหม่อีกครั้ง",
+                    Icon = "error",
+                    ImageSource = "Material"
+                })
+                return
+            end
+
+            for i, codeName in pairs(activeCodes) do
+                codeBox.Text = ""
+                task.wait(0.3)
+                codeBox.Text = codeName
+                task.wait(0.7) 
+              
+                local rx = redeemBtn.AbsolutePosition.X + (redeemBtn.AbsoluteSize.X / 2)
+                local ry = redeemBtn.AbsolutePosition.Y + (redeemBtn.AbsoluteSize.Y / 2) + 58
+                
+                VIM:SendMouseButtonEvent(rx, ry, 0, true, game, 1)
+                task.wait(0.2)
+                VIM:SendMouseButtonEvent(rx, ry, 0, false, game, 1)
+
+                pcall(function()
+                    local args = { codeName }
+                    game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("CodeRedeem"):InvokeServer(unpack(args))
+                end)
+
+                Luna:Notification({
+                    Title = "Redeeming", 
+                    Content = "กำลังใส่โค้ด: " .. codeName .. " (" .. i .. "/" .. #activeCodes .. ")", 
+                    Icon = "sync",
+                    ImageSource = "Material"
+                })
+                
+                task.wait(1.5) 
+            end
+
+            local closeBtn = playerGui:FindFirstChild("SettingsUI")
+                and playerGui.SettingsUI.MainFrame.Frame:FindFirstChild("CloseButtonFrame")
+            
+            if closeBtn then
+                task.wait(0.5)
+                local cx = closeBtn.AbsolutePosition.X + (closeBtn.AbsoluteSize.X / 2)
+                local cy = closeBtn.AbsolutePosition.Y + (closeBtn.AbsoluteSize.Y / 2) + 58
+                
+                VIM:SendMouseButtonEvent(cx, cy, 0, true, game, 1)
+                task.wait(0.1)
+                VIM:SendMouseButtonEvent(cx, cy, 0, false, game, 1)
+            end
+
+            Luna:Notification({
+                Title = "Success!",
+                Content = "Redeem โค้ดทั้งหมดเรียบร้อยแล้ว",
+                Icon = "check_circle",
+                ImageSource = "Material"
+            })
+        end)
+    end
+})
+
+---
+-- 2. TAB EXAMPLE (UI รวม Elements ต่างๆ)
+---
+local Tab = Window:CreateTab({
+    Name = "Tab Example",
+    Icon = "view_in_ar",
+    ImageSource = "Material",
+    ShowTitle = true
+})
+
+local Button = Tab:CreateButton({
+    Name = "Button Example!",
+    Callback = function()
+        print("Button Example Pressed!")
+    end
+})
+
+local Toggle = Tab:CreateToggle({
+    Name = "Toggle Example",
+    CurrentValue = false,
+    Callback = function(Value)
+        print("Toggle state is:", Value)
+    end
+}, "Toggle")
+
+Tab:CreateSection("This Is a section, below is a divider")
+Tab:CreateDivider()
+
+local Slider = Tab:CreateSlider({
+    Name = "Slider Example",
+    Range = {0, 200},
+    Increment = 5,
+    CurrentValue = 100,
+    Callback = function(Value)
+        print("Slider value is:", Value)
+    end
+}, "Slider")
+
+local Input = Tab:CreateInput({
+    Name = "Dynamic Input Example",
+    PlaceholderText = "Input Placeholder",
+    Callback = function(Text)
+        print("Input box text:", Text)
+    end
+}, "Input")
+
+local Paragraph = Tab:CreateParagraph({
+    Title = "Paragraph Example",
+    Text = "This is a paragraph with Luna Interface Suite support."
+})
+
+---
+-- 3. THEME & CONFIG TABS
+---
+local ThemeTab = Window:CreateTab({
+    Name = "Theme Tab",
+    Icon = "palette",
+    ImageSource = "Material",
+    ShowTitle = true
+})
+ThemeTab:BuildThemeSection()
+
+local ConfigTab = Window:CreateTab({
+    Name = "Config Tab",
+    Icon = "settings",
+    ImageSource = "Material",
+    ShowTitle = true
+})
+ConfigTab:BuildConfigSection()
+
+-- ส่งแจ้งเตือนเมื่อโหลดเสร็จ
+Luna:Notification({
+    Title = "Script Loaded",
+    Icon = "verified",
+    ImageSource = "Material",
+    Content = "Luna UI is ready with Redeem System!"
+})
